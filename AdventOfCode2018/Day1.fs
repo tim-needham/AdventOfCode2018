@@ -3,20 +3,20 @@
 open System;
 open System.IO;
 
-let produce (ps : int list) (qs : int list) : (int * int list) =
-    match ps with
-    | [] -> (List.head qs, List.tail qs);
-    | x::xs -> (x, xs);
+let produce (i : int) (is : int list) : int * int =
+    if i < (List.length is)-1 then
+        (i+1, is.[i]);
+    else
+        (0, is.[i])
 
-let apply (t : int) (ps : int list) (qs : int list) : (int * int list) =
-    let (p, ps') = produce ps qs;
-    (t + p, ps);
-
-let rec sample (t : int) (fs : int list) (ps : int list) (qs : int list) : int =
-    let (t', ps') = apply t ps qs;
-    match List.tryFind(fun x -> x = t') fs with
-    | Some _ -> t';
-    | None -> sample t' (t'::fs) ps' qs;
+let rec sample (f : int) (i : int) (is : int list) (m : Map<int, bool>) : int =
+    let (i', v) = produce i is;
+    let f' = f + v;
+    if Map.containsKey f' m then
+        f';
+    else
+        let m' = Map.add f' true m;
+        sample f' i' is m';
 
 let run (file : string) =
 
@@ -27,5 +27,5 @@ let run (file : string) =
     |> List.fold (fun a x -> a + x) 0
     |> printfn "Day 1, part 1: %d";
 
-    sample 0 [] input input
+    sample 0 0 input (new Map<int, bool>([]))
     |> printfn "Day 1, part 2: %d";
