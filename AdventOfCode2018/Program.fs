@@ -17,9 +17,15 @@ let main argv =
         printfn "Enter a day number (1-25) to run that day's challenge.";
         let i = System.Console.ReadLine();
 
-        match Int32.TryParse(i) with
-            | true, n when n > 0 && n < 26 -> problems.[n-1] (String.Format(@"day{0}.txt", n));
-            | true, _ -> ignore true;
-            | false, _ -> cont <- false;
+        match i with
+        | x when x.Length = 0 -> cont <- false;
+        | _ ->  let t, d =  match i.[0] with
+                            | 'T' | 't' -> true, Int32.TryParse(i.Substring(1));
+                            | _ -> false, Int32.TryParse(i);
+
+                match d with
+                    | true, n when n > 0 && n < 26 -> problems.[n-1] (String.Format(@"day{0}.txt", n), t);
+                    | true, _ -> ignore true;
+                    | false, _ -> cont <- false;
 
     0 // return an integer exit code

@@ -3,7 +3,7 @@ module Day25
 open System;
 open System.IO;
 
-let run (file : string) =
+let run (file : string, testMode : bool) =
 
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map (fun x -> Int32.Parse(x.ToString()));

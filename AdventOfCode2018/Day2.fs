@@ -40,15 +40,31 @@ let rec pairs lst =
     | h::t -> List.map (fun elem -> (h, elem)) t @ pairs t;
 
 
-let run (file : string) =
+let run (file : string, testMode : bool) =
 
     let input = Seq.toList(File.ReadLines(file));
 
-    input
+    let test1 = [ "abcdef";
+                "bababc";
+                "abbcde";
+                "abcccd";
+                "aabcdd";
+                "abcdee";
+                "ababab" ];
+
+    let test2 = [ "abcde";
+                "fghij";
+                "klmno"; 
+                "pqrst"; 
+                "fguij"; 
+                "axcye"; 
+                "wvxyz" ];
+
+    if testMode then test1 else input
     |> checksum
     |> printfn "Day 2, part 1: %d";
 
-    input
+    if testMode then test2 else input
     |> pairs
     |> prototype
     |> printfn "Day 2, part 2: %A";

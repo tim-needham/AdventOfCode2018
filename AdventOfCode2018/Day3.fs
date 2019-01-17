@@ -66,7 +66,7 @@ let without (c : Claim) (cs : Claim list) : Claim list =
 let permute (cs : Claim list) : (Claim * Claim list) list =
     [for c in cs -> (c, without c cs)];
 
-let run (file : string) =
+let run (file : string, testMode : bool) =
 
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map (fun x -> parse x);
@@ -74,11 +74,11 @@ let run (file : string) =
     let test = [ "#1 @ 1,3: 4x4"; "#2 @ 3,1: 4x4"; "#3 @ 5,5: 2x2" ]
                 |> List.map (fun x -> parse x);
 
-    input
+    if testMode then test else input
     |> overlap (new Map<int*int, int>([])) 
     |> printfn "Day 3, part 1: %d";
 
-    input
+    if testMode then test else input
     |> permute
     |> findIntact
     |> printfn "Day 3, part 2: %A";
