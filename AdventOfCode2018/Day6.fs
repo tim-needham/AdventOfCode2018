@@ -1,11 +1,13 @@
 module Day6
 
 open System;
+open System.Diagnostics;
 open System.IO;
 
 let parse (s : string) : int*int =
     match s.Split(',') with
     | [| x; y |] -> (Int32.Parse x, Int32.Parse y)
+    | _ -> failwith "Invalid input for parsing";
 
 let extent (cs : (int*int) list) : int*int =
     (cs |> List.maxBy fst |> fst, cs |> List.maxBy snd |> snd);
@@ -74,6 +76,9 @@ let prettyPrint (ps : ((int * int) * 'a) list) : unit =
 
 let run (file : string, testMode : bool) =
 
+    let w = new Stopwatch();
+    w.Start();
+
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map parse;
 
@@ -94,3 +99,6 @@ let run (file : string, testMode : bool) =
     |> plot2
     |> safe (if testMode then 32 else 10000)
     |> printfn "Day 6, part 2: %A";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;

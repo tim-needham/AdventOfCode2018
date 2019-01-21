@@ -1,5 +1,6 @@
 module Day5
 
+open System.Diagnostics;
 open System.IO;
 
 let step (c : char) (cs : char list) : char list =
@@ -25,6 +26,9 @@ let optimise (cs : char list) : int =
 
 let run (file : string, testMode : bool) =
 
+    let w = new Stopwatch();
+    w.Start();
+
     let input = Seq.toList(File.ReadLines(file)).[0];
 
     let test = "dabAcCaCBAcCcaDA";
@@ -38,3 +42,6 @@ let run (file : string, testMode : bool) =
     |> Seq.toList
     |> optimise
     |> printfn "Day 5, part 2: %d";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;

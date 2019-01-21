@@ -1,6 +1,7 @@
 module Day4
 
 open System;
+open System.Diagnostics;
 open System.IO;
 
 type State = 
@@ -22,6 +23,7 @@ let parse (s : string) : Event =
     | [| d; t; "Guard"; n; "begins"; "shift" |] -> { Timestamp = DateTime.Parse(d + " " + t); Action = Guard (Int32.Parse(n)) };
     | [| d; t; "wakes"; "up" |] -> { Timestamp = DateTime.Parse(d + " " + t); Action = Wakes };
     | [| d; t; "falls"; "asleep" |] -> { Timestamp = DateTime.Parse(d + " " + t); Action = Sleeps };
+    | _ -> failwith "Invalid input for parsing";
 
 let addSleep (m : Map<int*int, int>)  (g : int) (t : int) : Map<int*int, int> =
     match Map.containsKey (g, t) m with
@@ -33,11 +35,11 @@ let rec consume (m : Map<int*int, int>) (g : int) (t : int) (a : State) (es : Ev
     match es with
     | [] -> m;
     | x::xs ->  match x.Action with
-                | Guard n -> match a with
-                            | Awake -> consume m n 0 Awake xs;
-                            | Asleep -> let m' = [t..59]
-                                                |> List.fold (fun y z -> addSleep y g z) m;
-                                        consume m' n 0 Awake xs;
+                | Guard n ->    match a with
+                                | Awake -> consume m n 0 Awake xs;
+                                | Asleep -> let m' = [t..59]
+                                                    |> List.fold (fun y z -> addSleep y g z) m;
+                                            consume m' n 0 Awake xs;
                 | Wakes ->  let t' = x.Timestamp.Minute;
                             let m' = [t..(t' - 1)]
                                     |> List.fold (fun y z -> addSleep y g z) m;
@@ -80,6 +82,9 @@ let sleepiest2 (es : Event list) : int =
 
 let run (file : string, testMode : bool) =
 
+    let w = new Stopwatch();
+    w.Start();
+
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map (fun x -> parse(x))
                 |> List.sortBy (fun x -> x.Timestamp);
@@ -111,3 +116,6 @@ let run (file : string, testMode : bool) =
     if testMode then test else input
     |> sleepiest2
     |> printfn "Day 4, part 2: %d";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;

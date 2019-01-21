@@ -1,5 +1,6 @@
 module Day2
 
+open System.Diagnostics;
 open System.IO;
 
 let nples (n : int) (s : string) : int =
@@ -42,6 +43,9 @@ let rec pairs lst =
 
 let run (file : string, testMode : bool) =
 
+    let w = new Stopwatch();
+    w.Start();
+
     let input = Seq.toList(File.ReadLines(file));
 
     let test1 = [ "abcdef";
@@ -68,3 +72,6 @@ let run (file : string, testMode : bool) =
     |> pairs
     |> prototype
     |> printfn "Day 2, part 2: %A";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;

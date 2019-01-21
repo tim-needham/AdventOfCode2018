@@ -2,6 +2,7 @@
 
 open System;
 open System.IO;
+open System.Diagnostics
 
 let produce (i : int) (is : int list) : int * int =
     if i < (List.length is)-1 then
@@ -20,6 +21,9 @@ let rec sample (f : int) (i : int) (m : Map<int, bool>) (is : int list) : int =
 
 let run (file : string, testMode : bool) =
 
+    let w = new Stopwatch();
+    w.Start();
+
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map (fun x -> Int32.Parse(x));
 
@@ -33,3 +37,6 @@ let run (file : string, testMode : bool) =
     if testMode then test else input
     |> sample 0 0 (new Map<int, bool>([]))
     |> printfn "Day 1, part 2: %d";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;

@@ -1,6 +1,7 @@
 module Day3
 
 open System;
+open System.Diagnostics;
 open System.IO;
 
 type Claim = {
@@ -17,6 +18,7 @@ let parse (s : string) : Claim =
                             let xy = c.Split(',') |> Seq.toList |> List.map (fun x -> Int32.Parse x);
                             let wh = d.Split('x') |> Seq.toList |> List.map (fun x -> Int32.Parse x);
                             { Id = i; X = xy.[0]; Y = xy.[1]; W = wh.[0]; H = wh.[1] };
+    | _ -> failwith "Invalid input for parsing";
 
 let rec apply (m : Map<int*int, int>) (cs : Claim list) : Map<int*int, int> =
     match cs with
@@ -58,6 +60,7 @@ let rec findIntact (cs : (Claim * Claim list) list) : Claim =
                         x;
                      else
                         findIntact xs;
+    | [] -> failwith "There are no intact claims.";
 
 let without (c : Claim) (cs : Claim list) : Claim list =
     cs
@@ -67,6 +70,9 @@ let permute (cs : Claim list) : (Claim * Claim list) list =
     [for c in cs -> (c, without c cs)];
 
 let run (file : string, testMode : bool) =
+
+    let w = new Stopwatch();
+    w.Start();
 
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map (fun x -> parse x);
@@ -82,3 +88,6 @@ let run (file : string, testMode : bool) =
     |> permute
     |> findIntact
     |> printfn "Day 3, part 2: %A";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;

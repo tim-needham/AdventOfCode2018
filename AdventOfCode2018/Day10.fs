@@ -1,9 +1,13 @@
 module Day10
 
 open System;
+open System.Diagnostics;
 open System.IO;
 
 let run (file : string, testMode : bool) =
+
+    let w = new Stopwatch();
+    w.Start();
 
     let input = Seq.toList(File.ReadLines(file))
                 |> List.map (fun x -> Int32.Parse(x.ToString()));
@@ -13,3 +17,6 @@ let run (file : string, testMode : bool) =
 
     0
     |> printfn "Day 10, part 2: %d";
+
+    w.Stop();
+    printfn "Time taken: %d ms" w.ElapsedMilliseconds;
