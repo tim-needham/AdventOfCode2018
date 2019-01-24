@@ -5,7 +5,6 @@ open System.Diagnostics;
 open System.IO;
 
 type Node = {
-        Id : int;
         Children : Node list;
         MetaData : int list;
     };;
@@ -23,7 +22,7 @@ let rec build (c : int) (is : int list) : Node list * int list =
                         let ms, ns = zs
                                     |> List.splitAt m;
                         let (ps, qs) = build (c-1) ns;
-                        ({ Id = 0; Children = cs; MetaData = ms }::ps, qs);
+                        ({ Children = cs; MetaData = ms }::ps, qs);
 
 let parse (s : string) : Node =
     let ds = s.Split(' ')
