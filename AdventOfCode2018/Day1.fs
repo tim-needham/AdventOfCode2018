@@ -25,10 +25,10 @@ let run (file : string, testMode : bool) =
     w.Start();
 
     let input = Seq.toList(File.ReadLines(file))
-                |> List.map (fun x -> Int32.Parse(x));
+                |> List.map Int32.Parse;
 
     let test = [ "+1"; "-2"; "+3"; "+1" ]
-                |> List.map (fun x -> Int32.Parse(x));
+                |> List.map Int32.Parse;
 
     if testMode then test else input
     |> List.fold (fun a x -> a + x) 0

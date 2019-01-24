@@ -86,7 +86,7 @@ let run (file : string, testMode : bool) =
     w.Start();
 
     let input = Seq.toList(File.ReadLines(file))
-                |> List.map (fun x -> parse(x))
+                |> List.map parse
                 |> List.sortBy (fun x -> x.Timestamp);
 
     let test = [ "[1518-11-01 00:00] Guard #10 begins shift"; 
@@ -106,7 +106,7 @@ let run (file : string, testMode : bool) =
                 "[1518-11-05 00:03] Guard #99 begins shift";
                 "[1518-11-05 00:45] falls asleep";
                 "[1518-11-05 00:55] wakes up" ]
-                |> List.map (fun x -> parse(x))
+                |> List.map parse
                 |> List.sortBy (fun x -> x.Timestamp);
 
     if testMode then test else input

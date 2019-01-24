@@ -75,10 +75,10 @@ let run (file : string, testMode : bool) =
     w.Start();
 
     let input = Seq.toList(File.ReadLines(file))
-                |> List.map (fun x -> parse x);
+                |> List.map parse;
 
     let test = [ "#1 @ 1,3: 4x4"; "#2 @ 3,1: 4x4"; "#3 @ 5,5: 2x2" ]
-                |> List.map (fun x -> parse x);
+                |> List.map parse;
 
     if testMode then test else input
     |> overlap (new Map<int*int, int>([])) 
