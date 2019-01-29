@@ -21,6 +21,21 @@ let rec cook (rs : int array) (e : int) (f : int) (i : int) (t : int) : int arra
     | _ ->  let ss, g, h, j = brew rs e f i;
             cook ss g h j t;
 
+let success (t : string) (s : int) (l : int) (ar : int array) : bool = 
+    let c = ar.[s..(s+l-1)]
+            |> Array.fold (fun a x -> a + x.ToString()) "";
+    t.Equals(c);
+
+let rec recook (rs : int array) (e : int) (f : int) (i : int) (t : string) : int =
+    let l = t.Length;
+    if i > l && success t (i-l) l rs then
+        (i-l);
+    else if i > l + 1 && success t (i-l-1) l rs then
+        (i-l-1);
+    else
+        let ss, g, h, j = brew rs e f i;
+        recook ss g h j t;
+
 let run (file : string, testMode : bool) =
 
     let w = new Stopwatch();
@@ -30,16 +45,23 @@ let run (file : string, testMode : bool) =
                 |> Int32.Parse;
 
     let test = 9;
+    let test2 = 51589;
 
     let recipes = Array.zeroCreate<int> ((if testMode then test else input) + 12);
     Array.set recipes 0 3;
     Array.set recipes 1 7;
 
+    let recipes2 = Array.zeroCreate<int> ((if testMode then test else 100*input) + 12);
+    Array.set recipes2 0 3;
+    Array.set recipes2 1 7;
+
     if testMode then test else input
     |> cook recipes 0 1 2
     |> printfn "Day 14, part 1: %A";
 
-    0
+    if testMode then test2 else input
+    |> (fun x -> x.ToString())
+    |> recook recipes2 0 1 2
     |> printfn "Day 14, part 2: %d";
 
     w.Stop();
