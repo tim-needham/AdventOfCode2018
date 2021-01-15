@@ -217,14 +217,16 @@ let powerup (p : int) (g : Game) : Game =
     };
 
 let rec play2 (v : bool) (n : int) (p : int) (g : Game) (h : Game) : int =
-    match h |> powerup p |> round v with
+    match h |> round v with
     | true, _, i ->     if v then
                             printfn "Round %d: Power %d" (n+1) p;
                             prettyPrint i [] ' ';
                         if (i.Units |> List.filter (fun x -> x.Type = Elf) |> List.length) = (g.Units |> List.filter (fun x -> x.Type = Elf) |> List.length) then
                             play2 v (n+1) p g i;
                         else
-                            play2 v 0 (p+1) g g;
+                            g
+                            |> powerup (p+1)
+                            |> play2 v 0 (p+1) g;
     | false, c, i ->    if v then
                             printfn "Round %d %s: Power %d" (n+1) (if c then "complete" else "incomplete") p;
                             prettyPrint i [] ' ';
@@ -233,7 +235,9 @@ let rec play2 (v : bool) (n : int) (p : int) (g : Game) (h : Game) : int =
                             |> List.sumBy (fun x -> x.Health)
                             |> (fun x -> x * (n + if c then 1 else 0));
                         else
-                            play2 v 0 (p+1) g g;
+                            g
+                            |> powerup (p+1)
+                            |> play2 v 0 (p+1) g;
     
 let run (file : string, testMode : bool) =
 
@@ -329,7 +333,7 @@ let run (file : string, testMode : bool) =
     |> printfn "Day 15, part 1: %d";
 
     if testMode then test9 else input
-    |> (fun x -> x, x)
+    |> (fun x -> x, powerup 4 x)
     ||> play2 false 0 4
     |> printfn "Day 15, part 2: %d";
 
